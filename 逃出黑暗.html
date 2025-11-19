@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>！找到陈默！ - 恐怖导航挑战</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            height: 100%;
+            overflow: auto;
+        }
+        
+        body {
+            background-color: #000;
+            color: #c00;
+            font-family: 'Courier New', monospace;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            transition: background-color 0.2s ease;
+        }
+        
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(100, 0, 0, 0.1) 1px, transparent 1px),
+                radial-gradient(circle at 80% 70%, rgba(100, 0, 0, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 95%;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            margin-top: 20px;
+        }
+        
+        h1 {
+            margin: 20px 0;
+            font-size: 2.8rem;
+            text-shadow: 0 0 10px #f00, 0 0 20px #f00;
+            letter-spacing: 2px;
+            font-family: 'Times New Roman', serif;
+            line-height: 1.2;
+            word-wrap: break-word;
+            padding: 0 10px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+        
+        .game-info {
+            background: rgba(20, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 1px solid #500;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .game-stats {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        
+        .warning-container {
+            text-align: center;
+            width: 100%;
+            padding: 10px 0;
+            border-top: 1px solid rgba(255, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 0, 0, 0.3);
+        }
+        
+        .warning-icon {
+            font-size: 2rem;
+            color: #f00;
+            text-shadow: 0 0 10px #f00;
+            animation: pulse 1.5s infinite;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .warning-text {
+            font-size: 0.9rem;
+            color: #f55;
+            text-shadow: 0 0 5px #f00;
+        }
+        
+        .level-indicator {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-shadow: 0 0 5px #f00;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 8px 20px;
+            border-radius: 5px;
+            border: 1px solid #500;
+        }
+        
+        .timer {
+            font-family: 'Digital-7', monospace;
+            font-size: 2.5rem;
+            color: #f00;
+            text-shadow: 0 0 10px #f00;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 8px 20px;
+            border-radius: 5px;
+            border: 1px solid #500;
+            transition: all 0.2s ease;
+        }
+        
+        .timer.warning {
+            color: #fff;
+            background: rgba(100, 0, 0, 0.9);
+            text-shadow: 0 0 15px #f00;
+            animation: timerPulse 0.3s infinite alternate;
+        }
+        
+        #game-area {
+            width: 100%;
+            height: 500px;
+            background: #111;
+            border: 2px solid #500;
+            position: relative;
+            overflow: hidden;
+            margin: 20px 0;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+            transition: all 0.2s ease;
+        }
+        
+        #game-area.warning {
+            border: 2px solid #f00;
+            box-shadow: 0 0 40px rgba(255, 0, 0, 0.9);
+            background: #200;
+        }
+        
+        .target {
+            position: absolute;
+            background: rgba(0, 100, 0, 0.7);
+            border: 1px solid #0a0;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0f0;
+            font-weight: bold;
+            cursor: default;
+            z-index: 5;
+            box-shadow: 0 0 10px #0f0;
+        }
+        
+        .obstacle {
+            position: absolute;
+            background: rgba(100, 0, 0, 0.8);
+            border: 1px solid #f00;
+            cursor: not-allowed;
+            z-index: 10;
+            box-shadow: 0 0 15px #f00;
+        }
+        
+        .cursor-trail {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: rgba(255, 0, 0, 0.7);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 15;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 15px;
+            background: rgba(50, 0, 0, 0.7);
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+            border: 1px solid #500;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #0a0, #0f0);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 5px;
+            box-shadow: 0 0 10px #0f0;
+        }
+        
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            background: rgba(50, 0, 0, 0.8);
+            color: #f00;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid #500;
+            font-family: 'Courier New', monospace;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        button:hover {
+            background: rgba(80, 0, 0, 0.9);
+            color: #f55;
+            box-shadow: 0 0 10px #f00;
+        }
+        
+        #start-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 20;
+            background: rgba(0, 30, 0, 0.9);
+            color: #0f0;
+            border: 1px solid #0a0;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+        }
+        
+        #start-btn:hover {
+            background: rgba(0, 50, 0, 0.9);
+            color: #5f5;
+            box-shadow: 0 0 15px #0f0;
+        }
+        
+        .message {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        
+        .message-content {
+            background: rgba(20, 0, 0, 0.9);
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 500px;
+            border: 2px solid #500;
+            box-shadow: 0 0 30px #f00;
+        }
+        
+        /* 成功消息的样式 - 完全使用绿色主题 */
+        #success-message .message-content {
+            border: 2px solid #0a0;
+            box-shadow: 0 0 30px #0f0;
+            background: rgba(0, 20, 0, 0.9);
+            color: #0f0;
+        }
+        
+        #success-message .message-content h2 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #0f0;
+            color: #0f0;
+        }
+        
+        #success-message .message-content p {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: #0f0;
+        }
+        
+        #success-message .message-content button {
+            background: rgba(0, 50, 0, 0.8);
+            color: #0f0;
+            border: 1px solid #0a0;
+        }
+        
+        #success-message .message-content button:hover {
+            background: rgba(0, 80, 0, 0.9);
+            color: #5f5;
+            box-shadow: 0 0 10px #0f0;
+        }
+        
+        .message-content h2 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px currentColor;
+        }
+        
+        .message-content p {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        
+        .vibration {
+            animation: vibrate 0.1s linear infinite;
+        }
+        
+        @keyframes vibrate {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(2px, 2px); }
+            50% { transform: translate(0, 0); }
+            75% { transform: translate(-2px, -2px); }
+            100% { transform: translate(0, 0); }
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+        
+        @keyframes timerPulse {
+            0% { 
+                color: #fff;
+                text-shadow: 0 0 15px #f00;
+                transform: scale(1);
+            }
+            100% { 
+                color: #f55;
+                text-shadow: 0 0 25px #f00;
+                transform: scale(1.05);
+            }
+        }
+        
+        @keyframes redFlash {
+            0% { background-color: #000; }
+            50% { background-color: #400; }
+            100% { background-color: #000; }
+        }
+        
+        .red-flash {
+            animation: redFlash 0.3s infinite;
+        }
+        
+        .instructions {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #800;
+            line-height: 1.5;
+        }
+        
+        .border-warning {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 3px solid transparent;
+            z-index: 5;
+            pointer-events: none;
+        }
+        
+        .border-warning.active {
+            border-color: #f00;
+            animation: borderFlash 0.3s infinite;
+        }
+        
+        @keyframes borderFlash {
+            0% { border-color: #f00; }
+            50% { border-color: transparent; }
+            100% { border-color: #f00; }
+        }
+        
+        @font-face {
+            font-family: 'Digital-7';
+            src: url('https://fonts.cdnfonts.com/css/digital-7');
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+                letter-spacing: 1px;
+                margin: 15px 0;
+            }
+            
+            .game-stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .level-indicator, .timer {
+                font-size: 1.2rem;
+                padding: 6px 15px;
+            }
+            
+            #game-area {
+                height: 400px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+                margin: 10px 0;
+            }
+            
+            .level-indicator, .timer {
+                font-size: 1rem;
+                padding: 5px 12px;
+            }
+            
+            #game-area {
+                height: 350px;
+            }
+            
+            .message-content {
+                padding: 20px;
+                margin: 0 15px;
+            }
+            
+            .message-content h2 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>！找到陈默！</h1>
+        
+        <div class="game-info">
+            <div class="game-stats">
+                <div class="level-indicator">关卡: <span id="level">1</span>/3</div>
+                <div class="timer" id="timer">15</div>
+            </div>
+            <div class="warning-container">
+                <div class="warning-icon">⚠️</div>
+                <div class="warning-text">警告：避开符咒区域和封印边界！</div>
+            </div>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-bar" id="progress"></div>
+        </div>
+        
+        <div id="game-area">
+            <div class="border-warning" id="border-warning"></div>
+            <button id="start-btn">进入紫薇公园</button>
+        </div>
+        
+        <div class="instructions">
+            <p>警告：不要触碰红色障碍区域和游戏边界！一旦触碰，挑战将立即失败。你只有15秒时间完成所有关卡！</p>
+        </div>
+    </div>
+    
+    <div class="message" id="success-message">
+        <div class="message-content">
+            <h2>成功逃脱！</h2>
+            <p>你成功找到并唤醒了陈默！</p>
+            <p>剩余时间: <span id="time-remaining">0</span>秒</p>
+            <button id="rescue-success">解救成功</button>
+        </div>
+    </div>
+
+    <script>
+        // 游戏状态
+        const gameState = {
+            currentLevel: 1,
+            isPlaying: false,
+            targetElement: null,
+            obstacles: [],
+            progress: 0,
+            progressInterval: null,
+            cursorTrails: [],
+            maxTrails: 50,
+            timer: 15, // 改为15秒
+            timerInterval: null,
+            previousSafeAreas: [],
+            borderWarning: null,
+            borderWarningActive: false,
+            warningActive: false // 新增：用于跟踪10秒警告状态
+        };
+
+        // 关卡配置 - 增加障碍物数量和难度
+        const levels = [
+            { 
+                target: { width: 120, height: 80, holdTime: 1500 }, // 减少目标区域大小
+                obstacles: 25,  // 增加到25个障碍物
+                minSpacing: 10,  // 最小间距
+                safeAreaMinDistance: 150, // 破除符咒最小距离
+                centerSafeZone: true // 第一关中心区域无障碍物
+            },
+            { 
+                target: { width: 80, height: 60, holdTime: 2000 }, // 进一步减少目标区域大小
+                obstacles: 35,  // 增加到35个障碍物
+                minSpacing: 8,   // 减少最小间距
+                safeAreaMinDistance: 150 // 破除符咒最小距离
+            },
+            { 
+                target: { width: 60, height: 40, holdTime: 2500 }, // 更小的目标区域
+                obstacles: 45,  // 增加到45个障碍物
+                minSpacing: 5,   // 更小的间距
+                safeAreaMinDistance: 150 // 破除符咒最小距离
+            }
+        ];
+
+        // DOM元素
+        const gameArea = document.getElementById('game-area');
+        const levelDisplay = document.getElementById('level');
+        const progressBar = document.getElementById('progress');
+        const startBtn = document.getElementById('start-btn');
+        const successMessage = document.getElementById('success-message');
+        const playAgainBtn = document.getElementById('rescue-success');
+        const timerDisplay = document.getElementById('timer');
+        const timeRemainingDisplay = document.getElementById('time-remaining');
+        const borderWarning = document.getElementById('border-warning');
+
+        // 初始化游戏
+        function initGame() {
+            gameState.currentLevel = 1;
+            gameState.isPlaying = false;
+            gameState.progress = 0;
+            gameState.timer = 15; // 改为15秒
+            gameState.previousSafeAreas = [];
+            gameState.borderWarningActive = false;
+            gameState.warningActive = false;
+            
+            levelDisplay.textContent = gameState.currentLevel;
+            progressBar.style.width = '0%';
+            timerDisplay.textContent = gameState.timer;
+            gameArea.innerHTML = '';
+            
+            // 重新添加开始按钮和边界警告
+            const newStartBtn = document.createElement('button');
+            newStartBtn.id = 'start-btn';
+            newStartBtn.textContent = '进入紫薇公园';
+            newStartBtn.addEventListener('click', startGame);
+            gameArea.appendChild(newStartBtn);
+            
+            const newBorderWarning = document.createElement('div');
+            newBorderWarning.className = 'border-warning';
+            newBorderWarning.id = 'border-warning';
+            gameArea.appendChild(newBorderWarning);
+            gameState.borderWarning = newBorderWarning;
+            
+            // 隐藏消息
+            successMessage.style.display = 'none';
+            
+            // 清除所有光标轨迹
+            gameState.cursorTrails.forEach(trail => {
+                if (trail.parentNode) {
+                    trail.parentNode.removeChild(trail);
+                }
+            });
+            gameState.cursorTrails = [];
+            
+            // 清除定时器
+            if (gameState.timerInterval) {
+                clearInterval(gameState.timerInterval);
+                gameState.timerInterval = null;
+            }
+            
+            // 移除警告效果
+            timerDisplay.classList.remove('warning');
+            gameArea.classList.remove('warning');
+            document.body.classList.remove('red-flash');
+            
+            // 确保页面可以滚动
+            document.body.style.overflow = 'auto';
+            document.documentElement.style.overflow = 'auto';
+        }
+
+        // 开始游戏
+        function startGame() {
+            if (gameState.isPlaying) return;
+            
+            gameState.isPlaying = true;
+            
+            // 完全移除开始按钮
+            const startBtn = document.getElementById('start-btn');
+            if (startBtn) {
+                startBtn.remove();
+            }
+            
+            createLevel();
+            
+            // 添加光标移动监听
+            gameArea.addEventListener('mousemove', handleMouseMove);
+            
+            // 添加鼠标离开游戏区域监听
+            gameArea.addEventListener('mouseleave', handleBorderHit);
+            
+            // 开始倒计时
+            startTimer();
+            
+            // 防止页面滚动
+            document.body.style.overflow = 'hidden';
+            document.documentElement.style.overflow = 'hidden';
+        }
+
+        // 开始倒计时
+        function startTimer() {
+            gameState.timerInterval = setInterval(() => {
+                gameState.timer--;
+                timerDisplay.textContent = gameState.timer;
+                
+                // 检查是否需要激活10秒警告效果
+                if (gameState.timer <= 10 && !gameState.warningActive) {
+                    activateWarningEffect();
+                }
+                
+                if (gameState.timer <= 0) {
+                    handleTimeUp();
+                }
+            }, 1000);
+        }
+
+        // 激活10秒警告效果
+        function activateWarningEffect() {
+            gameState.warningActive = true;
+            
+            // 为计时器添加警告样式
+            timerDisplay.classList.add('warning');
+            
+            // 为游戏区域添加警告样式
+            gameArea.classList.add('warning');
+            
+            // 为整个页面添加红色闪烁效果
+            document.body.classList.add('red-flash');
+        }
+
+        // 时间耗尽处理
+        function handleTimeUp() {
+            gameState.isPlaying = false;
+            resetProgress();
+            
+            // 直接跳转到失败页面
+            window.location.href = "badending.html";
+            
+            // 清除定时器
+            clearInterval(gameState.timerInterval);
+            gameState.timerInterval = null;
+            
+            // 移除事件监听
+            gameArea.removeEventListener('mousemove', handleMouseMove);
+            gameArea.removeEventListener('mouseleave', handleBorderHit);
+            
+            // 移除警告效果
+            timerDisplay.classList.remove('warning');
+            gameArea.classList.remove('warning');
+            document.body.classList.remove('red-flash');
+            
+            // 恢复页面滚动
+            document.body.style.overflow = 'auto';
+            document.documentElement.style.overflow = 'auto';
+        }
+
+        // 创建关卡
+        function createLevel() {
+            // 清除之前的元素
+            if (gameState.targetElement) {
+                gameState.targetElement.remove();
+            }
+            
+            gameState.obstacles.forEach(obstacle => obstacle.remove());
+            gameState.obstacles = [];
+            
+            const levelConfig = levels[gameState.currentLevel - 1];
+            
+            // 创建目标区域
+            gameState.targetElement = document.createElement('div');
+            gameState.targetElement.className = 'target';
+            gameState.targetElement.style.width = `${levelConfig.target.width}px`;
+            gameState.targetElement.style.height = `${levelConfig.target.height}px`;
+            
+            // 随机位置（确保在游戏区域内且避开之前的破除符咒）
+            let randomX, randomY;
+            let overlapping = false;
+            let attempts = 0;
+            
+            do {
+                overlapping = false;
+                const maxX = gameArea.offsetWidth - levelConfig.target.width - 20;
+                const maxY = gameArea.offsetHeight - levelConfig.target.height - 20;
+                
+                randomX = 10 + Math.floor(Math.random() * maxX);
+                randomY = 10 + Math.floor(Math.random() * maxY);
+                
+                // 检查是否与之前的破除符咒重叠或距离太近
+                for (const safeArea of gameState.previousSafeAreas) {
+                    // 计算两个破除符咒中心点之间的距离
+                    const centerX1 = randomX + levelConfig.target.width / 2;
+                    const centerY1 = randomY + levelConfig.target.height / 2;
+                    const centerX2 = safeArea.x + safeArea.width / 2;
+                    const centerY2 = safeArea.y + safeArea.height / 2;
+                    
+                    const distance = Math.sqrt(
+                        Math.pow(centerX1 - centerX2, 2) + 
+                        Math.pow(centerY1 - centerY2, 2)
+                    );
+                    
+                    // 如果距离小于最小安全距离，则认为太近
+                    if (distance < levelConfig.safeAreaMinDistance) {
+                        overlapping = true;
+                        break;
+                    }
+                    
+                    // 同时检查是否有重叠
+                    if (randomX < safeArea.x + safeArea.width + 10 && 
+                        randomX + levelConfig.target.width + 10 > safeArea.x &&
+                        randomY < safeArea.y + safeArea.height + 10 && 
+                        randomY + levelConfig.target.height + 10 > safeArea.y) {
+                        overlapping = true;
+                        break;
+                    }
+                }
+                
+                attempts++;
+                if (attempts > 200) {
+                    // 如果尝试次数过多，放宽条件
+                    break;
+                }
+            } while (overlapping);
+            
+            gameState.targetElement.style.left = `${randomX}px`;
+            gameState.targetElement.style.top = `${randomY}px`;
+            gameState.targetElement.textContent = `破除符咒`;
+            
+            gameArea.appendChild(gameState.targetElement);
+            
+            // 记录当前破除符咒位置
+            gameState.previousSafeAreas.push({
+                x: randomX,
+                y: randomY,
+                width: levelConfig.target.width,
+                height: levelConfig.target.height
+            });
+            
+            // 创建障碍物
+            createObstacles(levelConfig.obstacles, levelConfig.target, randomX, randomY, levelConfig.minSpacing, gameState.currentLevel);
+            
+            // 重置进度
+            gameState.progress = 0;
+            progressBar.style.width = '0%';
+            
+            // 添加目标区域事件监听
+            gameState.targetElement.addEventListener('mouseenter', startProgress);
+            gameState.targetElement.addEventListener('mouseleave', resetProgress);
+        }
+
+        // 创建障碍物
+        function createObstacles(count, target, targetX, targetY, minSpacing, currentLevel) {
+            const obstacleTypes = [
+                { width: 100, height: 30 },
+                { width: 30, height: 100 },
+                { width: 80, height: 80 },
+                { width: 150, height: 20 },
+                { width: 20, height: 150 },
+                { width: 60, height: 60 },
+                { width: 120, height: 40 },
+                { width: 40, height: 120 },
+                { width: 70, height: 70 },
+                { width: 90, height: 25 },
+                { width: 25, height: 90 },
+                { width: 110, height: 35 },
+                { width: 35, height: 110 },
+                // 添加更多形状增加多样性
+                { width: 50, height: 50 },
+                { width: 130, height: 30 },
+                { width: 30, height: 130 },
+                { width: 140, height: 25 },
+                { width: 25, height: 140 },
+                { width: 45, height: 75 },
+                { width: 75, height: 45 }
+            ];
+            
+            // 存储已放置障碍物的位置信息
+            const placedObstacles = [];
+            
+            // 定义中心破除符咒域（仅第一关）
+            const centerSafeZone = currentLevel === 1 ? {
+                x: gameArea.offsetWidth / 2 - 100,
+                y: gameArea.offsetHeight / 2 - 100,
+                width: 200,
+                height: 200
+            } : null;
+            
+            for (let i = 0; i < count; i++) {
+                const obstacle = document.createElement('div');
+                obstacle.className = 'obstacle';
+                
+                // 随机选择障碍物类型
+                const type = obstacleTypes[Math.floor(Math.random() * obstacleTypes.length)];
+                obstacle.style.width = `${type.width}px`;
+                obstacle.style.height = `${type.height}px`;
+                
+                // 随机位置，确保不与目标区域、之前的破除符咒和已放置的障碍物重叠
+                let randomX, randomY;
+                let overlapping = false;
+                let attempts = 0;
+                
+                do {
+                    overlapping = false;
+                    const maxX = gameArea.offsetWidth - type.width - 20;
+                    const maxY = gameArea.offsetHeight - type.height - 20;
+                    
+                    randomX = 10 + Math.floor(Math.random() * maxX);
+                    randomY = 10 + Math.floor(Math.random() * maxY);
+                    
+                    // 检查是否与当前目标区域重叠
+                    if (randomX < targetX + target.width + minSpacing && 
+                        randomX + type.width + minSpacing > targetX &&
+                        randomY < targetY + target.height + minSpacing && 
+                        randomY + type.height + minSpacing > targetY) {
+                        overlapping = true;
+                    }
+                    
+                    // 检查是否与之前的破除符咒重叠
+                    if (!overlapping) {
+                        for (const safeArea of gameState.previousSafeAreas) {
+                            if (randomX < safeArea.x + safeArea.width + minSpacing && 
+                                randomX + type.width + minSpacing > safeArea.x &&
+                                randomY < safeArea.y + safeArea.height + minSpacing && 
+                                randomY + type.height + minSpacing > safeArea.y) {
+                                overlapping = true;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    // 检查是否与已放置的障碍物重叠
+                    if (!overlapping) {
+                        for (const placed of placedObstacles) {
+                            if (randomX < placed.x + placed.width + minSpacing && 
+                                randomX + type.width + minSpacing > placed.x &&
+                                randomY < placed.y + placed.height + minSpacing && 
+                                randomY + type.height + minSpacing > placed.y) {
+                                overlapping = true;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    // 第一关：检查是否与中心破除符咒域重叠
+                    if (!overlapping && centerSafeZone) {
+                        if (randomX < centerSafeZone.x + centerSafeZone.width && 
+                            randomX + type.width > centerSafeZone.x &&
+                            randomY < centerSafeZone.y + centerSafeZone.height && 
+                            randomY + type.height > centerSafeZone.y) {
+                            overlapping = true;
+                        }
+                    }
+                    
+                    attempts++;
+                    if (attempts > 200) break; // 增加尝试次数限制
+                } while (overlapping);
+                
+                // 如果尝试次数过多，跳过这个障碍物
+                if (attempts > 200) {
+                    continue;
+                }
+                
+                obstacle.style.left = `${randomX}px`;
+                obstacle.style.top = `${randomY}px`;
+                
+                // 记录这个障碍物的位置
+                placedObstacles.push({
+                    x: randomX,
+                    y: randomY,
+                    width: type.width,
+                    height: type.height
+                });
+                
+                // 添加鼠标进入事件（失败条件）
+                obstacle.addEventListener('mouseenter', handleObstacleHit);
+                
+                gameArea.appendChild(obstacle);
+                gameState.obstacles.push(obstacle);
+            }
+        }
+
+        // 处理障碍物碰撞
+        function handleObstacleHit() {
+            if (!gameState.isPlaying) return;
+            
+            gameState.isPlaying = false;
+            resetProgress();
+            
+            // 直接跳转到失败页面
+            window.location.href = "badending.html";
+            
+            // 清除定时器
+            clearInterval(gameState.timerInterval);
+            gameState.timerInterval = null;
+            
+            // 移除事件监听
+            gameArea.removeEventListener('mousemove', handleMouseMove);
+            gameArea.removeEventListener('mouseleave', handleBorderHit);
+            
+            // 移除警告效果
+            timerDisplay.classList.remove('warning');
+            gameArea.classList.remove('warning');
+            document.body.classList.remove('red-flash');
+            
+            // 恢复页面滚动
+            document.body.style.overflow = 'auto';
+            document.documentElement.style.overflow = 'auto';
+        }
+
+        // 处理鼠标移动（创建光标轨迹和边界检测）
+        function handleMouseMove(e) {
+            if (!gameState.isPlaying) return;
+            
+            // 创建光标轨迹
+            const trail = document.createElement('div');
+            trail.className = 'cursor-trail';
+            trail.style.left = `${e.clientX - gameArea.getBoundingClientRect().left - 3}px`;
+            trail.style.top = `${e.clientY - gameArea.getBoundingClientRect().top - 3}px`;
+            
+            gameArea.appendChild(trail);
+            gameState.cursorTrails.push(trail);
+            
+            // 限制轨迹数量
+            if (gameState.cursorTrails.length > gameState.maxTrails) {
+                const oldTrail = gameState.cursorTrails.shift();
+                if (oldTrail.parentNode) {
+                    oldTrail.parentNode.removeChild(oldTrail);
+                }
+            }
+            
+            // 边界检测
+            const gameRect = gameArea.getBoundingClientRect();
+            const mouseX = e.clientX;
+            const mouseY = e.clientY;
+            
+            // 检测是否接近边界
+            const borderThreshold = 5; // 距离边界的阈值
+            
+            const nearLeft = mouseX - gameRect.left < borderThreshold;
+            const nearRight = gameRect.right - mouseX < borderThreshold;
+            const nearTop = mouseY - gameRect.top < borderThreshold;
+            const nearBottom = gameRect.bottom - mouseY < borderThreshold;
+            
+            // 如果接近边界，激活边界警告
+            if (nearLeft || nearRight || nearTop || nearBottom) {
+                if (!gameState.borderWarningActive) {
+                    gameState.borderWarningActive = true;
+                    borderWarning.classList.add('active');
+                }
+            } else {
+                // 远离边界，取消警告
+                if (gameState.borderWarningActive) {
+                    gameState.borderWarningActive = false;
+                    borderWarning.classList.remove('active');
+                }
+            }
+        }
+
+        // 处理边界碰撞
+        function handleBorderHit() {
+            if (!gameState.isPlaying) return;
+            
+            gameState.isPlaying = false;
+            resetProgress();
+            
+            // 直接跳转到失败页面
+            window.location.href = "badending.html";
+            
+            // 清除定时器
+            clearInterval(gameState.timerInterval);
+            gameState.timerInterval = null;
+            
+            // 移除事件监听
+            gameArea.removeEventListener('mousemove', handleMouseMove);
+            gameArea.removeEventListener('mouseleave', handleBorderHit);
+            
+            // 移除警告效果
+            timerDisplay.classList.remove('warning');
+            gameArea.classList.remove('warning');
+            document.body.classList.remove('red-flash');
+            
+            // 恢复页面滚动
+            document.body.style.overflow = 'auto';
+            document.documentElement.style.overflow = 'auto';
+        }
+
+        // 开始进度
+        function startProgress() {
+            if (!gameState.isPlaying || gameState.progressInterval) return;
+            
+            const levelConfig = levels[gameState.currentLevel - 1];
+            const increment = 100 / (levelConfig.target.holdTime / 50);
+            
+            gameState.progressInterval = setInterval(() => {
+                gameState.progress += increment;
+                progressBar.style.width = `${gameState.progress}%`;
+                
+                if (gameState.progress >= 100) {
+                    completeLevel();
+                }
+            }, 50);
+        }
+
+        // 重置进度
+        function resetProgress() {
+            if (gameState.progressInterval) {
+                clearInterval(gameState.progressInterval);
+                gameState.progressInterval = null;
+            }
+            
+            gameState.progress = 0;
+            progressBar.style.width = '0%';
+        }
+
+        // 完成当前关卡
+        function completeLevel() {
+            resetProgress();
+            
+            // 添加完成效果
+            gameState.targetElement.style.background = 'rgba(0, 150, 0, 0.9)';
+            gameState.targetElement.style.boxShadow = '0 0 20px #0f0, 0 0 40px #0f0';
+            
+            setTimeout(() => {
+                if (gameState.currentLevel < levels.length) {
+                    // 进入下一关
+                    gameState.currentLevel++;
+                    levelDisplay.textContent = gameState.currentLevel;
+                    createLevel();
+                } else {
+                    // 完成所有关卡
+                    completeGame();
+                }
+            }, 800);
+        }
+
+        // 完成游戏
+        function completeGame() {
+            gameState.isPlaying = false;
+            timeRemainingDisplay.textContent = gameState.timer;
+            successMessage.style.display = 'flex';
+            
+            // 添加庆祝效果
+            document.body.style.backgroundColor = '#030';
+            setTimeout(() => {
+                document.body.style.backgroundColor = '#000';
+            }, 2000);
+            
+            // 清除定时器
+            clearInterval(gameState.timerInterval);
+            gameState.timerInterval = null;
+            
+            // 移除事件监听
+            gameArea.removeEventListener('mousemove', handleMouseMove);
+            gameArea.removeEventListener('mouseleave', handleBorderHit);
+            
+            // 移除警告效果
+            timerDisplay.classList.remove('warning');
+            gameArea.classList.remove('warning');
+            document.body.classList.remove('red-flash');
+            
+            // 恢复页面滚动
+            document.body.style.overflow = 'auto';
+            document.documentElement.style.overflow = 'auto';
+        }
+
+        // 事件监听
+        startBtn.addEventListener('click', startGame);
+        playAgainBtn.addEventListener('click', () => {
+            window.location.href = "goodending.html";
+        });
+
+        // 初始化游戏
+        initGame();
+    </script>
+</body>
+</html>

@@ -1,0 +1,920 @@
+﻿<style>/* 字体定义 */
+        @font-face {
+            font-family: 'AntiqueFont';
+            src: local('SimSun'), local('NSimSun'), local('SimHei');
+        }
+        
+        /* 基础样式 */
+        :root {
+            --void: #0F0D13;
+            --sepia: #2D2417;
+            --crimson: #5C1A1A;
+            --obsidian: #1A1A2E;
+            --ash: #333138;
+            --ghost: #E8E8E8;
+            --mourning: #2B2B2B;
+            --parchment: #D4C8B8;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'AntiqueFont', serif;
+            background-color: var(--void);
+            color: var(--parchment);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        /* 文字样式 */
+        .text-sepia { color: var(--parchment); }
+        .text-crimson { color: #A64242; }
+        .text-ghost { color: var(--ghost); }
+        .text-white { color: white; }
+        
+        /* 背景样式 */
+        .bg-void { background-color: var(--void); }
+        .bg-obsidian { background-color: var(--obsidian); }
+        .bg-mourning { background-color: var(--mourning); }
+        .bg-crimson { background-color: var(--crimson); }
+        
+        .bg-veil {
+            background-color: rgba(15,13,19,0.92);
+        }
+        
+        .bg-shadow-gradient {
+            background: linear-gradient(180deg, rgba(15,13,19,0.95) 0%, rgba(26,26,46,0.9) 100%);
+        }
+        
+        /* 边框样式 */
+        .border-sepia { border-color: rgba(212,200,184,0.2); }
+        
+        /* 布局样式 */
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .items-center { align-items: center; }
+        .justify-center { justify-content: center; }
+        .justify-between { justify-content: space-between; }
+        
+        .grid { display: grid; }
+        .grid-cols-1 { grid-template-columns: 1fr; }
+        
+        .gap-4 { gap: 1rem; }
+        .gap-6 { gap: 1.5rem; }
+        .gap-8 { gap: 2rem; }
+        
+        /* 尺寸样式 */
+        .w-full { width: 100%; }
+        .h-full { height: 100%; }
+        .h-screen { height: 100vh; }
+        .h-90vh { height: 90vh; }
+        
+        /* 间距样式 */
+        .p-4 { padding: 1rem; }
+        .p-6 { padding: 1.5rem; }
+        .p-8 { padding: 2rem; }
+        .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+        .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+        .py-10 { padding-top: 2.5rem; padding-bottom: 2.5rem; }
+        .py-20 { padding-top: 5rem; padding-bottom: 5rem; }
+        .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .mb-8 { margin-bottom: 2rem; }
+        .mb-12 { margin-bottom: 3rem; }
+        .mb-16 { margin-bottom: 4rem; }
+        .mt-4 { margin-top: 1rem; }
+        .mt-6 { margin-top: 1.5rem; }
+        .mt-12 { margin-top: 3rem; }
+        
+        /* 文本样式 */
+        .text-center { text-align: center; }
+        .text-xs { font-size: 0.75rem; }
+        .text-sm { font-size: 0.875rem; }
+        .text-lg { font-size: 1.125rem; }
+        .text-xl { font-size: 1.25rem; }
+        .text-2xl { font-size: 1.5rem; }
+        .text-3xl { font-size: 1.875rem; }
+        .text-4xl { font-size: 2.25rem; }
+        .text-6xl { font-size: 3.75rem; }
+        
+        .font-semibold { font-weight: 600; }
+        .font-bold { font-weight: bold; }
+        .tracking-wider { letter-spacing: 0.05em; }
+        .tracking-widest { letter-spacing: 0.1em; }
+        .leading-relaxed { line-height: 1.625; }
+        .leading-loose { line-height: 2; }
+        
+        .indent-8 { text-indent: 2rem; }
+        
+        .italic { font-style: italic; }
+        .uppercase { text-transform: uppercase; }
+        
+        /* 边框样式 */
+        .border { border-width: 1px; border-style: solid; }
+        .border-b { border-bottom-width: 1px; border-bottom-style: solid; }
+        .border-t { border-top-width: 1px; border-top-style: solid; }
+        .border-l { border-left-width: 1px; border-left-style: solid; }
+        
+        .rounded-md { border-radius: 0.375rem; }
+        .rounded-full { border-radius: 9999px; }
+        
+        /* 定位样式 */
+        .relative { position: relative; }
+        .absolute { position: absolute; }
+        .fixed { position: fixed; }
+        .sticky { position: sticky; }
+        
+        .inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+        .top-0 { top: 0; }
+        .bottom-8 { bottom: 2rem; }
+        .bottom-10 { bottom: 2.5rem; }
+        .right-8 { right: 2rem; }
+        
+        /* 变换样式 */
+        .transform { transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y)); }
+        .-translate-x-1\/2 { --tw-translate-x: -50%; }
+        
+        /* 视觉效果 */
+        .opacity-30 { opacity: 0.3; }
+        .opacity-50 { opacity: 0.5; }
+        .opacity-60 { opacity: 0.6; }
+        .opacity-70 { opacity: 0.7; }
+        .opacity-80 { opacity: 0.8; }
+        .opacity-90 { opacity: 0.9; }
+        
+        .backdrop-blur-sm { backdrop-filter: blur(4px); }
+        
+        .overflow-hidden { overflow: hidden; }
+        .overflow-auto { overflow: auto; }
+        
+        /* 响应式设计 */
+        @media (min-width: 768px) {
+            .md\:flex { display: flex; }
+            .md\:hidden { display: none; }
+            .md\:grid-cols-2 { grid-template-columns: 1fr 1fr; }
+            .md\:grid-cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+            .md\:flex-row { flex-direction: row; }
+            .md\:text-6xl { font-size: 3.75rem; }
+            .md\:text-xl { font-size: 1.25rem; }
+            .md\:p-12 { padding: 3rem; }
+            .container {
+                padding: 0 2rem;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .container {
+                padding: 0 3rem;
+            }
+        }
+        
+        @media (min-width: 1280px) {
+            .container {
+                padding: 0 4rem;
+            }
+        }
+        
+        @media (min-width: 1536px) {
+            .container {
+                padding: 0 6rem;
+            }
+        }
+        
+        /* 动画效果 */
+        .fade-in {
+            animation: fadeIn 2s ease-in-out;
+        }
+        
+        .page-turn {
+            animation: pageTurn 1.5s ease-out;
+        }
+        
+        .candle-flicker {
+            animation: candleFlicker 2s infinite alternate;
+        }
+        
+        .ghost-glow {
+            animation: ghostGlow 3s infinite alternate;
+        }
+        
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        
+        @keyframes pageTurn {
+            0% { transform: rotateY(-20deg); opacity: 0; }
+            100% { transform: rotateY(0); opacity: 1; }
+        }
+        
+        @keyframes candleFlicker {
+            0% { text-shadow: 0 0 3px rgba(166,66,66,0.6); }
+            100% { text-shadow: 0 0 8px rgba(166,66,66,0.9); }
+        }
+        
+        @keyframes ghostGlow {
+            0% { text-shadow: 0 0 5px rgba(232,232,232,0.4); }
+            100% { text-shadow: 0 0 15px rgba(232,232,232,0.8); }
+        }
+        
+        /* 过渡效果 */
+        .transition-all { transition-property: all; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+        .transition-colors { transition-property: color, background-color, border-color, text-decoration-color, fill, stroke; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+        
+        .duration-500 { transition-duration: 500ms; }
+        
+        /* 交互状态 */
+        .hover\:text-crimson:hover { color: #A64242; }
+        .hover\:bg-obsidian\/50:hover { background-color: rgba(26,26,46,0.5); }
+        
+        /* 工具类 */
+        .z-10 { z-index: 10; }
+        .z-50 { z-index: 50; }
+        
+        .object-cover { object-fit: cover; }
+        
+        .flex-shrink-0 { flex-shrink: 0; }
+        
+        .max-w-none { max-width: none; }
+        .max-w-2xl { max-width: 42rem; }
+        .max-w-3xl { max-width: 48rem; }
+        .max-w-4xl { max-width: 56rem; }
+        .max-w-5xl { max-width: 64rem; }
+        .max-w-6xl { max-width: 72rem; }
+        .max-w-full { max-width: 100%; }
+        .max-w-md { max-width: 28rem; }
+        
+        .list-inside { list-style-position: inside; }
+        .list-disc { list-style-type: disc; }
+        .list-decimal { list-style-type: decimal; }
+        
+        /* 自定义样式 */
+        .prose {
+            color: rgba(212,200,184,0.9);
+            max-width: 100%;
+            margin: 0 auto; /* 居中段落 */
+        }
+        
+        .prose-invert {
+            --tw-prose-body: rgba(212,200,184,0.9);
+            --tw-prose-headings: rgba(212,200,184,1);
+            --tw-prose-lead: rgba(212,200,184,0.9);
+            --tw-prose-links: rgba(212,200,184,0.9);
+            --tw-prose-bold: rgba(212,200,184,1);
+            --tw-prose-counters: rgba(212,200,184,0.9);
+            --tw-prose-bullets: rgba(212,200,184,0.9);
+            --tw-prose-hr: rgba(212,200,184,0.9);
+            --tw-prose-quotes: rgba(212,200,184,0.9);
+            --tw-prose-quote-borders: rgba(212,200,184,0.9);
+            --tw-prose-captions: rgba(212,200,184,0.9);
+            --tw-prose-code: rgba(212,200,184,0.9);
+            --tw-prose-pre-code: rgba(212,200,184,0.9);
+            --tw-prose-pre-bg: rgba(212,200,184,0.9);
+            --tw-prose-th-borders: rgba(212,200,184,0.9);
+            --tw-prose-td-borders: rgba(212,200,184,0.9);
+        }
+        
+        .prose p {
+            margin-top: 1.25em;
+            margin-bottom: 1.25em;
+        }
+        
+        /* 导航链接样式 */
+        .nav-link {
+            font-family: '黑体', 'SimHei', sans-serif;
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+        
+        .nav-link.active {
+            color: #A64242;
+            border-bottom: 1px solid #A64242;
+        }
+        
+        .nav-link:hover {
+            color: #A64242;
+        }
+        
+        /* 内容框样式 */
+        .content-box {
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+        
+        /* 网格居中 */
+        .grid-center {
+            display: grid;
+            justify-items: center;
+        }
+        
+        /* 图标样式 */
+        .fa {
+            display: inline-block;
+            font-style: normal;
+            font-variant: normal;
+            text-rendering: auto;
+            line-height: 1;
+        }
+        
+        .fa-bars:before { content: "☰"; }
+        .fa-circle-o:before { content: "○"; }
+        .fa-heart:before { content: "♥"; }
+        .fa-moon-o:before { content: "☾"; }
+        .fa-hand-spock-o:before { content: "✋"; }
+        .fa-heart-o:before { content: "♡"; }
+        .fa-handshake-o:before { content: "🤝"; }
+        .fa-eye-o:before { content: "👁"; }
+        .fa-balance-scale:before { content: "⚖"; }
+        .fa-envelope-o:before { content: "✉"; }
+        .fa-book:before { content: "📖"; }
+        .fa-users:before { content: "👥"; }
+        .fa-arrow-up:before { content: "↑"; }
+        .fa-bookmark-o:before { content: "🔖"; }
+        .fa-user:before { content: "👤"; }
+        
+        /* 页面切换样式 */
+        .page {
+            display: none;
+            min-height: 100vh;
+            padding-top: 80px; /* 导航栏高度 */
+            padding-bottom: 2rem;
+        }
+        
+        .page.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        .page-title {
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+        
+        /* 首页横幅样式 */
+        .hero-section {
+            height: calc(100vh - 80px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* 新增：小标题样式 */
+        .section-title {
+            text-align: center;
+            font-weight: bold;
+            margin: 1.5rem 0 1rem 0;
+            color: #A64242;
+        }
+
+        /* 新增：拯救陈默界面样式 */
+        #rescue-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15,13,19,0.95);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 2rem;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        #rescue-modal.active {
+            display: flex;
+        }
+        
+        .rescue-content {
+            background: linear-gradient(135deg, rgba(26,26,46,0.9) 0%, rgba(15,13,19,0.9) 100%);
+            border: 1px solid rgba(166,66,66,0.3);
+            border-radius: 0.5rem;
+            padding: 3rem;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(166,66,66,0.2);
+            position: relative;
+        }
+        
+        .rescue-title {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #A64242;
+            text-shadow: 0 0 10px rgba(166,66,66,0.5);
+        }
+        
+        .rescue-message {
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            color: var(--parchment);
+        }
+        
+        .rescue-button {
+            background: linear-gradient(135deg, #5C1A1A 0%, #A64242 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 0.375rem;
+            font-size: 1.125rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .rescue-button:hover {
+            background: linear-gradient(135deg, #A64242 0%, #5C1A1A 100%);
+            box-shadow: 0 0 15px rgba(166,66,66,0.5);
+            transform: translateY(-2px);
+        }
+        
+        .countdown {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background-color: rgba(166,66,66,0.2);
+            color: #A64242;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(166,66,66,0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(166,66,66,0); }
+            100% { box-shadow: 0 0 0 0 rgba(166,66,66,0); }
+        }
+</style>
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>幽冥婚仪 - 阴阳相契，生死不离</title>
+    
+
+
+    <!-- 导航栏 -->
+    <nav class="bg-void/95 border-b border-sepia/10 fixed top-0 z-50 backdrop-blur-sm w-full">
+        <div class="container px-6 py-4 flex justify-between items-center">
+            <!-- 标识 -->
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-obsidian/50 border border-sepia/20 flex items-center justify-center">
+                    <div class="w-6 h-6 rounded-full bg-crimson/30 flex items-center justify-center">
+                        <div class="w-3 h-3 rounded-full bg-ghost/50"></div>
+                    </div>
+                </div>
+                <h1 class="font-semibold text-xl text-sepia tracking-widest">幽冥婚仪</h1>
+            </div>
+
+            <!-- 导航链接 - 交换了"今日仪式"和"筹备指引"的位置 -->
+            <div class="hidden md:flex items-center gap-8 text-sm tracking-wide">
+                <a class="nav-link active" data-page="origin">冥婚起源</a>
+                <a class="nav-link" data-page="rituals">仪式规程</a>
+                <a class="nav-link" data-page="preparation">筹备指引</a>
+                <a class="nav-link" data-page="today">今日仪式</a>
+            </div>
+
+            <!-- 移动端菜单 - 同样交换了位置 -->
+            <button class="md:hidden text-sepia/70 hover:text-sepia text-xl" id="mobileMenuBtn">
+                <i class="fa fa-bars"></i>
+            </button>
+        </div>
+        
+        <!-- 移动端菜单 - 同样交换了位置 -->
+        <div class="md:hidden bg-void/95 border-t border-sepia/10 py-4 hidden" id="mobileMenu">
+            <div class="container px-6 flex flex-col gap-4">
+                <a class="nav-link active text-center" data-page="origin">冥婚起源</a>
+                <a class="nav-link text-center" data-page="rituals">仪式规程</a>
+                <a class="nav-link text-center" data-page="preparation">筹备指引</a>
+                <a class="nav-link text-center" data-page="today">今日仪式</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 冥婚起源页面 -->
+    <section id="origin" class="page active">
+        <!-- 首页横幅 -->
+        <div class="hero-section relative overflow-hidden w-full">
+            <div class="absolute inset-0 bg-veil"></div>
+            
+            <div class="container px-6 z-10 text-center fade-in">
+                <div class="w-20 h-20 mx-auto mb-8 rounded-full bg-obsidian/30 border border-sepia/20 flex items-center justify-center">
+                    <i class="fa fa-heart text-sepia/60 text-3xl"></i>
+                </div>
+                <h1 class="font-semibold text-4xl md:text-6xl text-ghost mb-6 tracking-wider ghost-glow">阴阳相契，生死不离</h1>
+                <div class="text-center">
+                    <p class="text-sepia/80 text-lg md:text-xl mx-auto leading-relaxed italic">
+                        生者与逝者之姻缘，跨越阴阳之界限。<br>
+                        以冥婚为桥，续未了之情，了未尽之缘。
+                    </p>
+                </div>
+            </div>
+
+            <!-- 装饰元素 -->
+            <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex gap-6 opacity-30">
+                <div class="w-1 h-6 bg-sepia/20"></div>
+                <div class="w-1 h-10 bg-sepia/20"></div>
+                <div class="w-1 h-6 bg-sepia/20"></div>
+            </div>
+        </div>
+
+        <div class="py-20 bg-shadow-gradient w-full">
+            <div class="container px-6">
+                <div class="content-box">
+                    <h2 class="text-3xl text-ghost mb-12 text-center tracking-wider ghost-glow">冥婚起源</h2>
+                    
+                    <div class="prose prose-invert max-w-none text-sepia/90 leading-relaxed">
+                        <p class="mb-6 indent-8">
+                            冥婚，亦称阴婚、鬼婚，源于上古祭祀文化，兴盛于秦汉，流传至今。古人相信，生死虽隔，情缘不断。未婚而亡者，魂魄无依，需觅阴阳之偶，方得安宁。
+                        </p>
+                        <p class="mb-6 indent-8">
+                            幽冥婚仪，承古礼之精髓，融阴阳之奥义。非迷信之俗，乃慰生者之痛，安逝者之灵。仪式庄严，程序严谨，旨在为阴阳两隔的有情人缔结姻缘，了却遗憾。
+                        </p>
+                        <p class="mb-6 indent-8">
+                            核心三义：一慰生者思念之苦，二安逝者孤魂之灵，三续未了之情缘。冥婚非终结，乃另一种形式的开始；非分离，乃永恒的联结。
+                        </p>
+                        
+                        <div class="mt-12 border-t border-sepia/10 pt-8 text-center italic candle-flicker text-crimson">
+                            "生不同衾，死亦同穴；阴阳相隔，情缘不断。"——《幽冥婚仪·本源篇》
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 仪式规程页面 -->
+    <section id="rituals" class="page">
+        <div class="py-20 bg-mourning w-full">
+            <div class="container px-6">
+                <h2 class="page-title text-ghost tracking-wider ghost-glow">仪式规程</h2>
+                
+                <div class="grid-center grid-cols-1 gap-12">
+                    <!-- 仪式：纸人引魂阵 -->
+                    <div class="bg-void/60 border border-sepia/10 p-8 fade-in content-box">
+                        <div class="flex items-center gap-4 mb-8">
+                            <div class="w-12 h-12 rounded-full bg-obsidian/40 border border-sepia/20 flex items-center justify-center">
+                                <i class="fa fa-hand-spock-o text-sepia/70"></i>
+                            </div>
+                            <h3 class="text-2xl text-ghost tracking-wider ghost-glow">纸人引魂阵 · 阴阳缔约</h3>
+                        </div>
+
+                        <div class="space-y-6 text-sepia/80 leading-relaxed">
+                            <h4 class="section-title">仪式场景</h4>
+                            <p class="indent-8">
+                                子夜，紫藤公园北侧的河边被霜气浸得泛白，二十八具红衣纸人按北斗七星方位环列成阵。昏迷中的男子面敷淡金，穿玄色马褂，一侧棺材内的女性尸体点朱唇、挽垂鬟，着绣凤红袄。
+                            </p>
+                            
+                            <h4 class="section-title">阵法布置</h4>
+                            <p class="indent-8">
+                                每具纸人手中都捏着一盏浸过朱砂的白烛，烛火在无风的庭院里明明灭灭，映得纸人五官忽阴忽阳。阵法中央铺着三尺红毡，毡上摆着黑白双棺，棺前供桌燃着长明灯，案上放着两对系红绳的牌位。
+                            </p>
+
+                            <h4 class="section-title">仪式过程</h4>
+                            <p class="indent-8">
+                                紫薇道士身披法袍，手持桃木剑，绕阵而行，口中念念有词。随着咒语声起，纸人手中的烛火骤然拔高，烛焰化作青绿色，纸人们竟缓缓抬起手臂，引魂幡轻轻晃动，形成一道肉眼难辨的阴阳气流。
+                            </p>
+
+                            <h4 class="section-title">禁忌警告</h4>
+                            <p class="candle-flicker text-crimson/80 italic indent-8">
+                                "此阵以纸人为引，牵阴阳二气，断不可碰！纸人若倾、若破、若离阵，魂魄便失了依附，冥婚即刻败裂，轻则阴煞缠身，重则横祸临头！"
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 筹备指引页面 -->
+    <section id="preparation" class="page">
+        <div class="py-20 bg-shadow-gradient w-full">
+            <div class="container px-6">
+                <h2 class="page-title text-ghost tracking-wider ghost-glow">筹备指引</h2>
+                
+                <div class="bg-void/60 border border-sepia/10 p-8 fade-in content-box">
+                    <div class="text-center mb-12">
+                        <p class="text-sepia/80 leading-relaxed mb-6">
+                            幽冥婚仪乃庄严之事，需慎重筹备。<br>
+                            仪式前，请确认心意坚定，非一时冲动，且已征得双方家庭同意。
+                        </p>
+                        <div class="w-32 h-px bg-sepia/20 mx-auto"></div>
+                    </div>
+
+                    <div class="space-y-10 text-sepia/80">
+                        <!-- 筹备条件 -->
+                        <div>
+                            <h3 class="text-2xl text-ghost mb-6 tracking-wider text-center ghost-glow">筹备三条件</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 grid-center">
+                                <div class="bg-obsidian/30 p-6 rounded-md border border-sepia/10 content-box">
+                                    <div class="w-12 h-12 rounded-full bg-crimson/20 border border-sepia/20 flex items-center justify-center mx-auto mb-4">
+                                        <i class="fa fa-heart-o text-sepia/70"></i>
+                                    </div>
+                                    <h4 class="text-lg text-ghost mb-3 text-center ghost-glow">情缘深厚</h4>
+                                    <p class="text-sm leading-relaxed text-center">
+                                        生者与逝者八字相合，冥婚应是天道注定的自然延续。
+                                    </p>
+                                </div>
+                                <div class="bg-obsidian/30 p-6 rounded-md border border-sepia/10 content-box">
+                                    <div class="w-12 h-12 rounded-full bg-crimson/20 border border-sepia/20 flex items-center justify-center mx-auto mb-4">
+                                        <i class="fa fa-handshake-o text-sepia/70"></i>
+                                    </div>
+                                    <h4 class="text-lg text-ghost mb-3 text-center ghost-glow">家庭同意</h4>
+                                    <p class="text-sm leading-relaxed text-center">
+                                        需征得双方亲属同意，特别是逝者父母的认可。家庭支持是冥婚顺利进行的重要保障。
+                                    </p>
+                                </div>
+                                <div class="bg-obsidian/30 p-6 rounded-md border border-sepia/10 content-box">
+                                    <div class="w-12 h-12 rounded-full bg-crimson/20 border border-sepia/20 flex items-center justify-center mx-auto mb-4">
+                                        <i class="fa fa-balance-scale text-sepia/70"></i>
+                                    </div>
+                                    <h4 class="text-lg text-ghost mb-3 text-center ghost-glow">心态端正</h4>
+                                    <p class="text-sm leading-relaxed text-center">
+                                        生者需心态端正，接受冥婚的真正意义——慰藉心灵、延续情缘。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 筹备流程 -->
+                        <div>
+                            <h3 class="text-2xl text-ghost mb-6 tracking-wider text-center ghost-glow">筹备流程</h3>
+                            <ol class="space-y-4">
+                                <li class="flex gap-4">
+                                    <div class="w-8 h-8 rounded-full bg-obsidian/40 border border-sepia/20 flex items-center justify-center flex-shrink-0">
+                                        <span class="text-sepia/70">1</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-lg text-ghost mb-1 ghost-glow">前期咨询</h4>
+                                        <p class="text-sm leading-relaxed">
+                                            与主礼者深入沟通，了解冥婚的意义、流程及注意事项，确认自身是否适合举行冥婚。
+                                        </p>
+                                    </div>
+                                </li>
+                                <li class="flex gap-4">
+                                    <div class="w-8 h-8 rounded-full bg-obsidian/40 border border-sepia/20 flex items-center justify-center flex-shrink-0">
+                                        <span class="text-sepia/70">2</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-lg text-ghost mb-1 ghost-glow">家庭沟通</h4>
+                                        <p class="text-sm leading-relaxed">
+                                            与双方家庭充分沟通，征得理解与同意。特别是逝者父母的支持至关重要。
+                                        </p>
+                                    </div>
+                                </li>
+                                <li class="flex gap-4">
+                                    <div class="w-8 h-8 rounded-full bg-obsidian/40 border border-sepia/20 flex items-center justify-center flex-shrink-0">
+                                        <span class="text-sepia/70">3</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-lg text-ghost mb-1 ghost-glow">材料准备</h4>
+                                        <p class="text-sm leading-relaxed">
+                                            准备双方生辰八字、逝者遗照、婚书、仪式所需物品等。主礼者会提供详细清单。
+                                        </p>
+                                    </div>
+                                </li>
+                                <li class="flex gap-4">
+                                    <div class="w-8 h-8 rounded-full bg-obsidian/40 border border-sepia/20 flex items-center justify-center flex-shrink-0">
+                                        <span class="text-sepia/70">4</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-lg text-ghost mb-1 ghost-glow">择日举行</h4>
+                                        <p class="text-sm leading-relaxed">
+                                            由主礼者根据双方生辰八字择定吉日，举行冥婚仪式。仪式后需遵相关习俗进行后续祭奠。
+                                        </p>
+                                    </div>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 今日仪式页面 -->
+    <section id="today" class="page">
+        <div class="py-20 bg-mourning w-full">
+            <div class="container px-6">
+                <h2 class="page-title text-ghost tracking-wider ghost-glow">今日仪式</h2>
+                
+                <div class="grid-center grid-cols-1 gap-8">
+                    <!-- 仪式安排 -->
+                    <div class="bg-void/60 border border-sepia/10 p-8 fade-in content-box">
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="flex items-center gap-4">
+                                <div class="w-14 h-14 rounded-full bg-obsidian/40 border border-sepia/20 flex items-center justify-center">
+                                    <i class="fa fa-user text-sepia/70 text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl text-ghost tracking-wider ghost-glow">今日主礼</h3>
+                                    <p class="text-sepia/60 text-sm">紫薇道长 · 主礼法师</p>
+                                </div>
+                            </div>
+                            <p class="text-sepia/50 text-sm italic">庚子年八月三十</p>
+                        </div>
+
+                        <div class="text-sepia/80 leading-relaxed indent-8">
+                            <p class="mb-4">
+                                今日乃庚子年八月三十，幽冥婚仪将举行一场特殊的冥婚仪式。此仪为刘氏女晓丽与其阳间夫婿之合魂大典。
+                            </p>
+                            <p class="mb-4">
+                                仪式将于子时（23:00-01:00）在紫薇公园北侧河畔举行。届时，紫薇道长将亲自主持，为其亡女刘晓丽完成阴阳缔约。
+                            </p>
+                            <p>
+                                此仪遵循古礼，融合阴阳之道，旨在慰藉生者之痛，安抚亡者之灵。仪式全程庄严肃穆，参与者需着素衣，持敬畏之心。
+                            </p>
+                        </div>
+
+                        <div class="mt-6 text-right text-crimson/70 italic candle-flicker">
+                            "阴阳相隔，情缘不断；红绸为证，缔约今生。"
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 拯救陈默界面 -->
+    <div id="rescue-modal">
+        <div class="rescue-content">
+            <div class="countdown" id="countdown">10</div>
+            <h2 class="rescue-title">紧急启示</h2>
+            <div class="rescue-message">
+                <p>在冥婚仪式的深处，你感知到一股异样的能量波动...</p>
+                <p class="mt-4">陈默的灵魂被困在阴阳交界处，需要你的帮助才能解脱。</p>
+                <p class="mt-4">时间紧迫，请立即前往拯救陈默！</p>
+            </div>
+            <button class="rescue-button" id="rescue-button">前往拯救</button>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="bg-void/95 border-t border-sepia/10 py-10 w-full">
+        <div class="container px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-obsidian/50 border border-sepia/20 flex items-center justify-center">
+                        <div class="w-6 h-6 rounded-full bg-crimson/30 flex items-center justify-center">
+                            <div class="w-3 h-3 rounded-full bg-ghost/50"></div>
+                        </div>
+                    </div>
+                    <h2 class="font-semibold text-xl text-sepia tracking-widest">幽冥婚仪</h2>
+                </div>
+
+                <div class="text-center md:text-left text-sepia/60 text-xs max-w-md">
+                    <p>壬寅年 修订 | 愿天下有情人，阴阳两界皆得安宁</p>
+                    <p class="mt-2">© 无版权声明（虚构服务） | 本页面仅为艺术创作，与真实习俗无关</p>
+                </div>
+
+                <div class="flex gap-4">
+                    <a href="#" class="w-10 h-10 rounded-full bg-obsidian/30 border border-sepia/20 flex items-center justify-center hover:bg-obsidian/50 transition-all duration-500">
+                        <i class="fa fa-envelope-o text-sepia/60"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-obsidian/30 border border-sepia/20 flex items-center justify-center hover:bg-obsidian/50 transition-all duration-500">
+                        <i class="fa fa-book text-sepia/60"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-obsidian/30 border border-sepia/20 flex items-center justify-center hover:bg-obsidian/50 transition-all duration-500">
+                        <i class="fa fa-users text-sepia/60"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 虚构创作提示 -->
+    <div class="bg-crimson/20 text-sepia text-center py-1 text-xs opacity-70 w-full">
+    </div>
+
+    
+
+<body><script>// 页面切换功能
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const pages = document.querySelectorAll('.page');
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const rescueModal = document.getElementById('rescue-modal');
+            const rescueButton = document.getElementById('rescue-button');
+            const countdownElement = document.getElementById('countdown');
+            
+            let countdownTimer;
+            let rescueTimer;
+            
+            // 默认显示第一个页面
+            pages[0].classList.add('active');
+            
+            // 导航链接点击事件
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // 获取目标页面ID
+                    const targetPage = this.getAttribute('data-page');
+                    
+                    // 更新活动状态
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // 切换页面
+                    pages.forEach(page => {
+                        page.classList.remove('active');
+                        if (page.id === targetPage) {
+                            page.classList.add('active');
+                            
+                            // 如果切换到"今日仪式"页面，启动10秒定时器
+                            if (targetPage === 'today') {
+                                startRescueTimer();
+                            } else {
+                                // 如果离开"今日仪式"页面，清除定时器
+                                clearRescueTimer();
+                            }
+                        }
+                    });
+                    
+                    // 关闭移动端菜单
+                    if (mobileMenu.classList.contains('hidden') === false) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                    
+                    // 滚动到顶部
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            });
+            
+            // 移动端菜单按钮点击事件
+            mobileMenuBtn.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // 页面加载动画
+            document.body.classList.add('fade-in');
+            
+            // 拯救按钮点击事件
+            rescueButton.addEventListener('click', function() {
+                window.location.href = '答题.html';
+            });
+            
+            // 启动拯救定时器
+            function startRescueTimer() {
+                // 清除之前的定时器（如果有）
+                clearRescueTimer();
+                
+                let countdown = 10;
+                countdownElement.textContent = countdown;
+                
+                // 更新倒计时显示
+                countdownTimer = setInterval(function() {
+                    countdown--;
+                    countdownElement.textContent = countdown;
+                    
+                    if (countdown <= 0) {
+                        clearInterval(countdownTimer);
+                    }
+                }, 1000);
+                
+                // 5秒后显示拯救界面
+                rescueTimer = setTimeout(function() {
+                    rescueModal.classList.add('active');
+                }, 5000);
+            }
+            
+            // 清除拯救定时器
+            function clearRescueTimer() {
+                if (countdownTimer) {
+                    clearInterval(countdownTimer);
+                }
+                if (rescueTimer) {
+                    clearTimeout(rescueTimer);
+                }
+                rescueModal.classList.remove('active');
+            }
+        });</script></body>
